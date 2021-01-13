@@ -1,15 +1,7 @@
 #![allow(dead_code)]
 use crate::parser_combinator::take_except;
 use crate::types::{Block, Block::CodeBlock};
-use nom::{
-    branch::alt,
-    bytes::complete::{tag, take_while},
-    character::complete::char,
-    combinator::{eof, peek},
-    multi::{count, many0_count},
-    sequence::tuple,
-    IResult,
-};
+use nom::{IResult, branch::alt, bytes::complete::{tag, take_while}, character::complete::{char, one_of}, combinator::{eof, opt, peek}, multi::{count, many0_count}, sequence::tuple};
 
 fn block_end(
     input: &str,
@@ -32,12 +24,18 @@ fn block_end_parser(
     move |s: &str| block_end(s, c, count)
 }
 
+fn peek_char(input: &str) -> IResult<&str, char> {
+  peek(one_of("~`"))(input)
+}
+
+fn info_string(input: &str) -> IResult<&str, &str> {
+  take_while(|c| c != '\n')(input)
+}
+
 pub fn code_block(input: &str) -> IResult<&str, Block> {
-    named!(peek_char<&str, char>, peek!(one_of!("~`")));
-    named!(code_lang<&str, &str>, take_while!(|c| c != '\n'));
     let (_, c) = peek_char(input).unwrap();
     let (input, (_, count)) = tuple((count(char(c), 3), many0_count(char(c))))(input)?;
-    let (input, info) = code_lang(input)?;
+    let (input, info) = info_string(input)?;
     let info = info.trim_matches(|ch| ch == c || ch == ' ');
 
     // empty code block
@@ -51,7 +49,7 @@ pub fn code_block(input: &str) -> IResult<&str, Block> {
 
     let (input, _) = char('\n')(input)?;
     let (input, content) = take_except(block_end_parser(c, count))(input)?;
-    let (input, _) = opt!(input, block_end_parser(c, count))?;
+    let (input, _) = opt(block_end_parser(c, count))(input)?;
     Ok((
         input,
         CodeBlock(Some(info.to_string()), content.to_string()),
