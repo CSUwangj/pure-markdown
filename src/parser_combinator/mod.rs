@@ -1,10 +1,12 @@
 #![allow(dead_code)]
 
+#[macro_use]
+mod macros;
 use nom::error::ParseError;
 use nom::IResult;
 use nom::{InputLength, InputTake, Parser};
 
-/// A parser similar to `nom::bytes::complete::take_until()`, but accept a 
+/// A parser similar to `nom::bytes::complete::take_until()`, but accept a
 /// parser as parameter, returns the input slice up to the postion where parser success.
 /// It doesn't consume the pattern. It will return whole input if the pattern wasn't met.
 /// # Example
@@ -56,15 +58,12 @@ mod tests {
         assert_eq!(expect_rest, result_rest);
         assert_eq!(expect_consumed, result_consumed);
 
-
         let input = "12345";
         let expect_rest = "";
         let expect_consumed = "12345";
         let (result_rest, result_consumed) = take_except(exception)(input).unwrap();
         assert_eq!(expect_rest, result_rest);
         assert_eq!(expect_consumed, result_consumed);
-
-        
     }
 
     #[test]
@@ -109,4 +108,3 @@ mod tests {
         assert_eq!(expect_consumed, result_consumed);
     }
 }
-

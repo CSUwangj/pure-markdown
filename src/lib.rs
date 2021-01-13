@@ -5,5 +5,4 @@ pub mod inline;
 pub mod parser_combinator;
 pub mod types;
 #[cfg(test)]
-mod tests {
-}
+mod tests {}
