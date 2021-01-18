@@ -52,7 +52,7 @@ fn remove_spaces(count: usize, content: &str) -> String {
     content_string
 }
 
-pub fn code_block(input: &str) -> IResult<&str, Block> {
+pub fn fenced_code_block(input: &str) -> IResult<&str, Block> {
     let (_, c) = peek_char(input)?;
     let (input, (spaces, _, count)) = tuple((
         take_while_m_n(0, 3, |c| c == ' '),
@@ -95,7 +95,7 @@ mod tests {
  >"
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -112,7 +112,7 @@ mod tests {
  >"
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -129,7 +129,7 @@ mod tests {
  >"
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -146,7 +146,7 @@ aaa
 ~~~"
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -162,7 +162,7 @@ aaa
 ```"
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -180,7 +180,7 @@ aaa
 ```"
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -197,7 +197,7 @@ aaa
 ```"
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -213,7 +213,7 @@ aaa
 ~~~"
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -231,7 +231,7 @@ aaa
 "
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -249,7 +249,7 @@ aaa";
 aaa"
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -266,7 +266,7 @@ aaa"
   "
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -276,7 +276,7 @@ aaa"
         let input = "```
 ```";
         let want = CodeBlock(Some("".to_string()), "".to_string());
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -292,7 +292,7 @@ aaa
 aaa"
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -311,7 +311,7 @@ aaa
 aaa"
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -329,7 +329,7 @@ aaa"
 aaa"
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -339,7 +339,7 @@ aaa"
 aaa
   ```";
         let want = CodeBlock(Some("".to_string()), "aaa".to_string());
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -349,7 +349,7 @@ aaa
 aaa
   ```";
         let want = CodeBlock(Some("".to_string()), "aaa".to_string());
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -364,7 +364,7 @@ aaa
     ```"
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -379,7 +379,7 @@ aaa
 ~~~ ~~"
                 .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -397,7 +397,7 @@ end
 end"
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -416,7 +416,7 @@ end
 end"
             .to_string(),
         );
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -426,7 +426,7 @@ end"
         let input = "````;
 ````";
         let want = CodeBlock(Some(";".to_string()), "".to_string());
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -436,7 +436,7 @@ end"
         let input = "``` aa ```
 foo";
         let want = CodeBlock(Some("aa".to_string()), "foo".to_string());
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -446,7 +446,7 @@ foo";
         let input = "~~~ aa ~~~
 foo";
         let want = CodeBlock(Some("aa".to_string()), "foo".to_string());
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
@@ -457,7 +457,7 @@ foo";
 ``` aaa
 ```";
         let want = CodeBlock(Some("".to_string()), "``` aaa".to_string());
-        let (input, result) = code_block(input).unwrap();
+        let (input, result) = fenced_code_block(input).unwrap();
         assert_eq!(input, "");
         assert_eq!(want, result);
     }
