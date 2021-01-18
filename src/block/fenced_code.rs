@@ -47,7 +47,7 @@ fn remove_spaces(count: usize, content: &str) -> String {
     let mut content_string: String = content.to_string();
     for _ in 0..count {
         content_string = content.replace("\n ", "\n");
-        content = content_string.as_str();
+        content = &content_string;
     }
     content_string
 }
@@ -68,7 +68,7 @@ pub fn code_block(input: &str) -> IResult<&str, Block> {
     let content = remove_spaces(spaces.len(), content);
     let content = match content.chars().nth(0) {
         Some('\n') => &content[1..],
-        _ => content.as_str(),
+        _ => &content,
     };
 
     Ok((
