@@ -46,11 +46,16 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use nom::{
+        bytes::streaming::tag, character::streaming::char, error::Error, multi::count,
+        sequence::tuple, IResult,
+    };
 
     #[test]
     fn test_except_with_char() {
-        named!(exception<&str, char>, char!('c'));
-
+        fn exception(i: &str) -> IResult<&str, char, Error<&str>> {
+            char('c')(i)
+        }
         let input = "1234c";
         let expect_rest = "c";
         let expect_consumed = "1234";
@@ -68,7 +73,9 @@ mod tests {
 
     #[test]
     fn test_except_with_tag() {
-        named!(exception<&str, &str>, tag!("test"));
+        fn exception(i: &str) -> IResult<&str, &str, Error<&str>> {
+            tag("test")(i)
+        }
 
         let input = "1234test123";
         let expect_rest = "test123";
@@ -87,11 +94,9 @@ mod tests {
 
     #[test]
     fn test_except_with_tuple() {
-        named!(exception<&str, (&str, Vec<char>, &str)>, tuple!(
-            tag!("test"),
-            count!(char!('`'), 3),
-            tag!("test")
-        ));
+        fn exception(i: &str) -> IResult<&str, (&str, Vec<char>, &str), Error<&str>> {
+            tuple((tag("test"), count(char('`'), 3), tag("test")))(i)
+        }
 
         let input = "1234test123test```test123";
         let expect_rest = "test```test123";
