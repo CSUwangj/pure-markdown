@@ -46,14 +46,11 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use nom::{
-        bytes::streaming::tag, character::streaming::char, error::Error, multi::count,
-        sequence::tuple, IResult,
-    };
+    use nom::{bytes::complete::tag, character::complete::char, multi::count, sequence::tuple};
 
     #[test]
     fn test_except_with_char() {
-        fn exception(i: &str) -> IResult<&str, char, Error<&str>> {
+        fn exception(i: &str) -> IResult<&str, char> {
             char('c')(i)
         }
         let input = "1234c";
@@ -73,7 +70,7 @@ mod tests {
 
     #[test]
     fn test_except_with_tag() {
-        fn exception(i: &str) -> IResult<&str, &str, Error<&str>> {
+        fn exception(i: &str) -> IResult<&str, &str> {
             tag("test")(i)
         }
 
@@ -94,7 +91,7 @@ mod tests {
 
     #[test]
     fn test_except_with_tuple() {
-        fn exception(i: &str) -> IResult<&str, (&str, Vec<char>, &str), Error<&str>> {
+        fn exception(i: &str) -> IResult<&str, (&str, Vec<char>, &str)> {
             tuple((tag("test"), count(char('`'), 3), tag("test")))(i)
         }
 
