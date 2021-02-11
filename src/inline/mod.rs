@@ -1,2 +1,2 @@
 
-mod temp_str;
+mod text;
